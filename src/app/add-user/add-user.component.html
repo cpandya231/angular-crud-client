@@ -1,16 +1,32 @@
-
-<form [formGroup]="userFormGroup" (ngSubmit)="onSubmit()" >
+<form
+  [formGroup]="userFormGroup"
+  (ngSubmit)="onSubmit()"
+  class="needs-validation"
+  novalidate
+>
   <div class="panel panel-primary">
     <div class="panel-heading">
       <h3 class="panel-title ">Register User</h3>
     </div>
     <div class="panel-body">
-      <div class="form-group" [ngClass]="{'has-error':userFormGroup.get('firstName').touched && !userFormGroup.get('firstName').valid}">
+      <div class="form-group">
         <label class="col-sm-2 control-label" for="firstName">First Name</label>
         <div class="col-sm-8">
-          <input id="firstName" type="text" formControlName="firstName" class="form-control" />
-          <span class="error" *ngIf="userFormGroup.get('firstName').touched && !userFormGroup.get('firstName').valid">
-            Please enter first name.
+          <input
+            id="firstName"
+            type="text"
+            formControlName="firstName"
+            class="form-control  "
+            [ngClass]="{
+              'is-invalid': formErrors.firstName,
+              'is-valid': !formErrors.firstName
+            }"
+            (blur)="validateForm()"
+          />
+          <span class="invalid-feedback" *ngIf="formErrors.firstName">
+            <span *ngIf="formErrors.firstName">
+              {{ formErrors.firstName }}
+            </span>
           </span>
         </div>
       </div>
@@ -18,21 +34,34 @@
       <div class="form-group">
         <label class="col-sm-2 control-label" for="last_name">Last Name</label>
         <div class="col-sm-8">
-          <input id="last_name" type="text" formControlName="lastName" class="form-control" />
+          <input
+            id="last_name"
+            type="text"
+            formControlName="lastName"
+            class="form-control"
+          />
         </div>
       </div>
 
       <div class="form-group">
         <label class="col-sm-2 control-label" for="age">Age</label>
         <div class="col-sm-8">
-          <input id="age" type="text" formControlName="age" class="form-control" />
+          <input
+            id="age"
+            type="text"
+            formControlName="age"
+            class="form-control"
+          />
         </div>
       </div>
-
     </div>
     <div class="panel-footer">
       <button class="btn btn-primary" type="submit">Create</button>
     </div>
+    <div class="panel-footer">
+      <button class="btn btn-primary" type="button" (click)="loadData()">
+        Load Data
+      </button>
+    </div>
   </div>
 </form>
-
