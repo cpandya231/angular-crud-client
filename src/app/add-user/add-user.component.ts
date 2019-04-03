@@ -1,6 +1,12 @@
 import { ApiService } from "./../api.service";
 import { Component, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import {
+  FormGroup,
+  FormBuilder,
+  Validators,
+  AbstractControl,
+  FormArray
+} from "@angular/forms";
 import { Router } from "@angular/router";
 
 @Component({
@@ -10,16 +16,30 @@ import { Router } from "@angular/router";
 })
 export class AddUserComponent implements OnInit {
   userFormGroup: FormGroup;
+  skill: FormGroup;
 
   validationErrors = {
-    'firstName': {
-      "required": "Please enter first name.",
-      "minlength": "First name should be atleast 2 to 10 char long"
+    firstName: {
+      required: "Please enter first name.",
+      minlength: "First name should be atleast 2 to 10 char long"
+    },
+    email: {
+      required: "Please enter email.",
+      email: "Invalid email",
+      invalidEmailDomain: "Only gmail domains are allowed"
+    },
+    phone: {
+      required: "Please enter phone.",
+      minlength: "Invalid phone number",
+      maxlength: "Invalid phone number"
     }
+
+
   };
-  formErrors={
-    'firstName':''
-  }
+  formErrors = {
+
+
+  };
   constructor(
     private fb: FormBuilder,
     private apiService: ApiService,
@@ -32,38 +52,71 @@ export class AddUserComponent implements OnInit {
         "",
         [Validators.required, Validators.minLength(2), Validators.maxLength(10)]
       ],
-      lastName: [""],
-      age: [""]
+      email: [
+        "",
+        [
+          Validators.email,
+          Validators.required,
+          emailDomainValidation("gmail.com")
+        ]
+      ],
+      phone: [
+        "",
+        [
+          Validators.minLength(10),
+          Validators.maxLength(10),
+          Validators.required
+        ]
+      ],
+      age: [""],
+      skill: this.fb.array([this.addSkillFormGroup()])
     });
 
-    this.userFormGroup.valueChanges.subscribe(data=>{
+    this.userFormGroup.valueChanges.subscribe(data => {
       this.validateForm();
-    })
+    });
+
+
   }
 
+  addSkillFormGroup(): FormGroup {
+    return this.fb.group({
+      skillname: ["", Validators.required],
+      experience: ["", Validators.required],
+      proficiency: ["", Validators.required]
+    });
+  }
 
 
   loadData() {
     this.validateForm(this.userFormGroup);
-    console.log(this.formErrors);
+
   }
-  validateForm(group: FormGroup=this.userFormGroup): void {
+  validateForm(group: FormGroup = this.userFormGroup): void {
+    console.log(group);
     Object.keys(group.controls).forEach(key => {
+      this.formErrors[key] = "";
       const abstractControl = group.get(key);
+      this.validateControlOrForm(abstractControl, key);
+
       if (abstractControl instanceof FormGroup) {
         this.validateForm(abstractControl);
-      } else {
-        this.formErrors[key]='';
-        if(abstractControl && !abstractControl.valid){
-          const messages= this.validationErrors[key];
-          for(const error in abstractControl.errors){
-            if(error){
-              this.formErrors[key]+=messages[error]+' ';
-            }
-          }
+      }
+
+    });
+  }
+
+  private validateControlOrForm(abstractControl: AbstractControl, key: string) {
+    if (abstractControl && !abstractControl.valid && abstractControl.touched) {
+
+      const messages = this.validationErrors[key];
+      for (const error in abstractControl.errors) {
+        if (error) {
+
+          this.formErrors[key] += messages[error] + " ";
         }
       }
-    });
+    }
   }
 
   onSubmit(): void {
@@ -72,4 +125,24 @@ export class AddUserComponent implements OnInit {
       this.router.navigate(["listusers"]);
     });
   }
+
+  addSkill():void{
+
+    (<FormArray>this.userFormGroup.get('skill')).push(this.addSkillFormGroup());
+
+  }
+  removeSkills(skillIndex){
+    (<FormArray>this.userFormGroup.get('skill')).removeAt(skillIndex);
+  }
+}
+function emailDomainValidation(domainName: string) {
+  return (control: AbstractControl): { [key: string]: any } | null => {
+    const email: string = control.value;
+    const domain = email.substring(email.lastIndexOf("@") + 1);
+    if (email === "" || domain.toLowerCase() === domainName.toLowerCase()) {
+      return null;
+    } else {
+      return { invalidEmailDomain: true };
+    }
+  };
 }

@@ -1,0 +1,18 @@
+{
+  "users": [
+    {
+      "firstName": "jkjhj",
+      "email": "cp@gmail.com",
+      "phone": "9989169291",
+      "age": "24",
+      "skill": [
+        {
+          "skillname": "",
+          "experience": "",
+          "proficiency": ""
+        }
+      ],
+      "id": 2
+    }
+  ]
+}

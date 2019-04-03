@@ -1,7 +1,7 @@
 import { User } from './../model/user.model';
 import { Component, OnInit, Input } from '@angular/core';
 import { ApiService } from './../api.service';
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 @Component({
   selector: 'app-edit-user',
@@ -11,32 +11,40 @@ import { Router } from '@angular/router';
 export class EditUserComponent implements OnInit {
   userFormGroup: FormGroup;
   @Input()
-  user:User;
-  constructor(private fb:FormBuilder,
-    private apiService:ApiService,
-    private router: Router) {}
+  user: User;
+  constructor(private fb: FormBuilder,
+              private apiService: ApiService,
+              private router: Router) {}
 
   ngOnInit() {
-    let userId = window.localStorage.getItem("editUserId");
+    const userId = window.localStorage.getItem('editUserId');
 
     this.userFormGroup = this.fb.group({
-      id:['',Validators.required],
+      id: ['', Validators.required],
       firstName: [''],
-      lastName: [''],
+      email: [''],
       age: [''],
-      salary:['']
+      phone: [''],
+      skill: this.fb.array([this.addSkillFormGroup()])
     });
-    if(userId){
-      this.apiService.getUserById(userId).subscribe(user=>{
-        console.log(`Response:${user.lastName}`)
+    if (userId) {
+      this.apiService.getUserById(userId).subscribe(user => {
+        console.log(`Response:${user.lastName}`);
         this.userFormGroup.setValue(user);
       });
     }
   }
+  addSkillFormGroup(): FormGroup {
+    return this.fb.group({
+      skillname: ["", Validators.required],
+      experience: ["", Validators.required],
+      proficiency: ["", Validators.required]
+    });
+  }
 
   onSubmit(): void {
     this.apiService.updateUser(this.userFormGroup.value).subscribe(
-      data=>{
+      data => {
         console.log(`Response received ${data}`);
         this.router.navigate(['listusers']);
       }

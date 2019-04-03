@@ -13,39 +13,40 @@ export class ApiService {
 
   private httpOptions = {
     headers: new HttpHeaders({
-      'Accept':'application/json' ,
+      Accept: 'application/json' ,
       'Content-Type': 'application/json'
       })
   };
 
-  private baseUrl="http://localhost:8081/user/";
-  constructor(private http:HttpClient) { }
+  private baseUrlOld = 'http://localhost:8081/user/';
+  private baseUrl = 'http://localhost:3000/users/';
+  constructor(private http: HttpClient) { }
 
 
   createUser(user: User): Observable<User> {
 
-    return this.http.post<User>(this.baseUrl+"createUser", user,this.httpOptions).pipe(
+    return this.http.post<User>(this.baseUrl, user, this.httpOptions).pipe(
       tap((responseUser: User) => console.log(`added hero w/ id=${responseUser.id}`))
     );
   }
 
-  getAllUsers():Observable<User[]>{
-    return this.http.get<User[]>(this.baseUrl+"getUsers",this.httpOptions);
+  getAllUsers(): Observable<User[]> {
+    return this.http.get<User[]>(this.baseUrl , this.httpOptions);
 
   }
 
   getUserById(userId): Observable<User> {
 
-    return this.http.get<User>(this.baseUrl+"getUser/"+userId,this.httpOptions);
+    return this.http.get<User>(this.baseUrl + '' + userId, this.httpOptions);
   }
 
-  deleteUser(userId):Observable<HttpResponse<String>>{
-      return this.http.delete<HttpResponse<String>>(this.baseUrl+"deleteUser/"+userId,this.httpOptions);
+  deleteUser(userId): Observable<HttpResponse<String>> {
+      return this.http.delete<HttpResponse<String>>(this.baseUrl + '' + userId, this.httpOptions);
 
   }
 
-  updateUser(user:User):Observable<User>{
-    return this.http.put<User>(this.baseUrl+"updateUser", user,this.httpOptions);
+  updateUser(user: User): Observable<User> {
+    return this.http.put<User>(this.baseUrl + ''+ user.id, this.httpOptions);
   }
 
 

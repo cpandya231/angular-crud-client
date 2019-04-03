@@ -7,11 +7,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 const routes: Routes = [
-  {path:'',redirectTo:'/dashboard',component:AppModule,pathMatch:'full'},
-  {path:'dashboard',component:DashboardComponent},
-  {path:'createUser',component:AddUserComponent},
-  {path:'listusers',component:ListUserComponent},
-  {path:'updateUser',component:EditUserComponent}
+  {path: '', redirectTo: '/dashboard', component: AppModule, pathMatch: 'full'},
+  {path: 'dashboard', component: DashboardComponent},
+  {path: 'createUser', component: AddUserComponent},
+  {path: 'listusers', component: ListUserComponent},
+  {path: 'updateUser', component: EditUserComponent}
 ];
 
 @NgModule({

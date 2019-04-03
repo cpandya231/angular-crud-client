@@ -11,35 +11,35 @@ import { Route, Router } from '@angular/router';
 })
 export class ListUserComponent implements OnInit {
 
-  users:User[];
-  constructor(private apiService:ApiService,
-    private router:Router) { }
+  users: User[];
+  constructor(private apiService: ApiService,
+              private router: Router) { }
 
   ngOnInit() {
     this.getAllUsers();
   }
-  getAllUsers(){
+  getAllUsers() {
     this.apiService.getAllUsers()
       .subscribe(arg => this.users = arg);
 
   }
-  addUser(){
+  addUser() {
     this.router.navigate(['createUser']);
   }
 
-  deleteUser(user:User){
+  deleteUser(user: User) {
     this.apiService.deleteUser(user.id)
     .subscribe(
-      data=>{
+      data => {
         console.log(data);
-        this.users=this.users.filter(u=>u!=user);
+        this.users = this.users.filter(u => u != user);
       }
     );
   }
 
-  updateUser(user:User){
-    window.localStorage.removeItem("editUserId");
-    window.localStorage.setItem("editUserId", user.id.toString());
+  updateUser(user: User) {
+    window.localStorage.removeItem('editUserId');
+    window.localStorage.setItem('editUserId', user.id.toString());
     this.router.navigate(['updateUser']);
   }
 
